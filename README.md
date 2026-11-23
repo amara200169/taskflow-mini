@@ -63,3 +63,7 @@ If private, the repository requires authorized GitHub access.
 ## Interview note
 
 Ask whether reusing previously written code is allowed before cloning it during the assessment. The instructions shown do not explicitly confirm permission to submit a prebuilt application.
+
+## Optional database upgrade (not needed for the timed interview)
+
+See [examples/database/README.md](examples/database/README.md) for a separate, working Flask + SQLAlchemy version with SQLite locally, an optional private PostgreSQL/RDS connection through `DATABASE_URL`, HTML edit/complete/delete buttons, safe connection guidance, and verification steps. The original root-level app stays unchanged.
