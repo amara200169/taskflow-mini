@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TaskFlow with Database</title>
+  <style>
+    body{font:16px Arial,sans-serif;background:#f3f6fb;color:#17253a;margin:0;padding:35px 16px}
+    main{max-width:700px;margin:auto;background:#fff;border-radius:14px;padding:28px;box-shadow:0 6px 24px #0001}
+    h1{color:#184e8a}input{padding:10px;border:1px solid #bac4d3;border-radius:8px;min-width:0}
+    button{padding:10px 12px;cursor:pointer;border:0;border-radius:8px;background:#2563eb;color:#fff}
+    form{display:inline-flex;gap:7px;align-items:center;flex-wrap:wrap}
+    li{display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid #e5e7eb;padding:13px 0;flex-wrap:wrap}
+    ul{padding:0;list-style:none}.muted{color:#6b7280}.done{text-decoration:line-through;color:#6b7280}
+    .danger{background:#b91c1c}.subtle{background:#64748b}
+  </style>
+</head>
+<body><main>
+  <h1>TaskFlow</h1>
+  <p class="muted">Persistent task manager — SQLite or PostgreSQL</p>
+  <form action="{{ url_for('add_task') }}" method="post">
+    <input name="task" placeholder="Enter a task" maxlength="200" required aria-label="New task">
+    <button type="submit">Add</button>
+  </form>
+  <h2>Tasks ({{ tasks|length }})</h2>
+  {% if not tasks %}<p class="muted">No tasks yet.</p>{% endif %}
+  <ul>
+  {% for task in tasks %}
+    <li>
+      <span class="{{ 'done' if task.completed else '' }}">{{ task.title }}</span>
+      <div>
+        <form action="{{ url_for('edit_task', task_id=task.id) }}" method="post">
+          <input name="task" aria-label="Edit {{ task.title }}" value="{{ task.title }}" maxlength="200" required>
+          <button class="subtle" type="submit">Save</button>
+        </form>
+        <form action="{{ url_for('complete_task', task_id=task.id) }}" method="post">
+          <button class="subtle" type="submit">{{ 'Undo' if task.completed else 'Complete' }}</button>
+        </form>
+        <form action="{{ url_for('delete_task', task_id=task.id) }}" method="post">
+          <button class="danger" type="submit">Delete</button>
+        </form>
+      </div>
+    </li>
+  {% endfor %}
+  </ul>
+</main></body>
+</html>
