@@ -53,6 +53,50 @@ cd taskflow-mini
 
 If private, the repository requires authorized GitHub access.
 
+## cURL fallback — if you skip the HTML buttons during the interview
+
+The root application already accepts **HTML form submissions**, so these commands work without a clickable UI. They use the existing Flask routes in `app.py`, **not** the JSON routes from the separate API practice exercise.
+
+Run these commands in **Git Bash, Linux, or macOS Terminal** after starting the app.
+
+### 1. Confirm the service is healthy (read-only)
+
+```bash
+curl -i http://localhost:8080/health
+```
+
+Expected response body: `{"status":"ok"}`.
+
+### 2. Create a task
+
+```bash
+# -d submits the same form field (name="task") as the webpage.
+# -i shows the HTTP response headers; the app redirects to / after creating.
+curl -i -X POST http://localhost:8080/add -d "task=Learn AWS"
+```
+
+The app replies with a redirect to `/`. Follow it to view your saved task:
+
+```bash
+curl -L -X GET http://localhost:8080/
+```
+
+Or open `http://localhost:8080/` in a browser.
+
+### 3. Delete the task
+
+```bash
+# Delete the task at zero-based list position 0 (the first task).
+# WARNING: This changes in-memory data; double-check the index.
+curl -i -X POST http://localhost:8080/delete/0
+```
+
+Confirm by opening `http://localhost:8080/` again (or run `curl http://localhost:8080/`). There is no undo other than adding the task again. When a task is deleted, the remaining task positions shift.
+
+**If deploying to AWS:** replace `http://localhost:8080` with your actual service URL and port. For example, when host port 80 maps to container port 8080, use `http://YOUR_PUBLIC_IP` without `:8080`. Do not assume an existing instance IP will be provided for the coding test.
+
+**Important:** This repo uses `POST /add` with the form field `task`, and `POST /delete/<index>`. It does **not** use `POST /tasks` with JSON or `DELETE /tasks/<id>`. If you build the separate JSON API from memory instead, the cURL commands must match those different routes and request formats.
+
 ## Troubleshooting
 
 - If `py` is missing, install Python for Windows or use your installed Python executable.
